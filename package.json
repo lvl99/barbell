@@ -1,0 +1,36 @@
+{
+  "name": "barbell",
+  "version": "0.1.0",
+  "description": "Benchmark your JS easily",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watch"
+  },
+  "keywords": [
+    "test",
+    "benchmark",
+    "performance",
+    "optimize",
+    "optimise"
+  ],
+  "author": "Matt Scheurich <matt@lvl99.com>",
+  "license": "MIT",
+  "dependencies": {
+    "benchmark": "^2.1.4",
+    "chalk": "^2.4.1",
+    "commander": "^2.19.0",
+    "glob": "^7.1.3",
+    "humanize-duration": "^3.15.3",
+    "listr": "^0.14.3",
+    "lodash": "^4.17.11",
+    "rxjs": "^6.3.3",
+    "uuid": "^3.3.2",
+    "vm2": "^3.6.4"
+  },
+  "devDependencies": {
+    "jest": "^23.6.0",
+    "jest-cli": "^23.6.0",
+    "object-get": "^2.1.0",
+    "object-path": "^0.11.4"
+  }
+}
