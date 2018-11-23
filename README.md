@@ -127,10 +127,12 @@ Aside from the CLI options, you can also configure via an external `barbell.conf
     // Verbose mode (outputs config settings)
     verbose: false,
 
-    // Advanced: the package, script or function to run bench files with
+    // Advanced: the package name, script path or custom function to run bench files with
+    // See ./lib/runner.js for more info
     runner: "barbell/lib/runner",
 
-    // Advanced: the package, script or function to output a report
+    // Advanced: the package name, script path or custom function to output a report
+    // See ./lib/reporter.js for more info
     reporter: "barbell/lib/reporter"
   }
 ```
