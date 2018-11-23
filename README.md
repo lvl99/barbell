@@ -10,7 +10,7 @@ I wanted something like Jest but for performance testing:
 
 - It's good to test how performant your code is within an isolated JS environment.
 - Helps developers to be aware of how slow/fast their code is.
-- Set expectations on code performance to see if your code meets them (see [To Do](#to-do)).
+- Set expectations on code performance to see if your code meets them (see [v0.2.0 To do](https://github.com/lvl99/barbell/projects/1)).
 
 > **Note:** Barbell performs tests within a Node.JS environment, not within a browser. If you want to test within a browser, use [Benchmark JS](https://benchmarkjs.com/) or [jsPerf](https://jsperf.com/).
 
