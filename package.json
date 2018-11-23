@@ -1,13 +1,20 @@
 {
   "name": "barbell",
   "version": "0.1.0",
-  "description": "Benchmark your JS easily",
+  "description": "Easily benchmark your JS code's performance via CLI using similar (but different) interface to Jest.",
   "main": "index.js",
+  "bin": {
+    "barbell": "index.js"
+  },
+  "engines": {
+    "node": ">= 8"
+  },
   "scripts": {
     "test": "jest --watch"
   },
   "keywords": [
     "test",
+    "testing",
     "benchmark",
     "performance",
     "optimize",

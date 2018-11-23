@@ -1,8 +1,12 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --harmony
 
 const pkg = require("./package.json");
 const program = require("commander");
 const barbell = require("./lib/cmd");
+
+function setConcurrent(val) {
+  return parseInt(val, 10) || barbell.defaultConfig.concurrent;
+}
 
 function collect(val, memo = []) {
   if (!(memo instanceof Array)) {
@@ -18,7 +22,7 @@ program
   .option("-c, --config <path>", "Set path to config file")
   .option(
     "-t, --test-match [globPatterns...]",
-    "Set the test match glob(s) to detect benchmark tests",
+    "Set the test match glob pattern(s) to detect benchmark tests or test file paths",
     collect,
     barbell.defaultConfig.testMatch.slice(0)
   )
@@ -29,16 +33,16 @@ program
     barbell.defaultConfig.exclude.slice(0)
   )
   .option(
-    "-c, --concurrent",
+    "-C, --concurrent",
     "The number of benches you want to run at the same time",
-    undefined,
+    setConcurrent,
     barbell.defaultConfig.concurrent
   )
   .option(
     "-x, --stop-on-errors",
     "Stop Barbell if any errors are found within test suites"
   )
-  .option("-v, --verbose", "Verbose mode");
+  .option("-v, --verbose", "Verbose mode (outputs config settings)");
 
 program.action(barbell);
 
