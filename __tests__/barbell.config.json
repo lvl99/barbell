@@ -1,0 +1,3 @@
+{
+  "testMatch": ["./__benches__/example.bench.js"]
+}

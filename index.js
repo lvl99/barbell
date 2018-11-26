@@ -2,7 +2,7 @@
 
 const pkg = require("./package.json");
 const program = require("commander");
-const barbell = require("./lib/cmd");
+const barbell = require("./lib/barbell");
 
 function setConcurrent(val) {
   return parseInt(val, 10) || barbell.defaultConfig.concurrent;
