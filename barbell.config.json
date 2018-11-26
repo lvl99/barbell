@@ -1,5 +1,0 @@
-{
-  "testMatch": "./__benches__/example.bench.js",
-  "stopOnErrors": true,
-  "verbose": true
-}
