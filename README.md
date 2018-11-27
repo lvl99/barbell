@@ -71,7 +71,7 @@ Options:
                                       benchmark tests or test file paths
                                       (default: ["**/?(__(tests|benches)__)/**/*.bench.?(t|j)s?(x)","**/*.bench.?(t|j)s?(x)"])
   -e, --exclude [globPatterns...]     Exclude specific files and folders
-                                      (default: ["node_modules"])
+                                      (default: ["**/node_modules/**/*"])
   -C, --concurrent                    The number of benches you want to run at
                                       the same time
                                       (default: 2)
@@ -102,6 +102,8 @@ Options:
 
 Aside from the CLI options, you can also configure via an external `barbell.config.*` file (supported file formats are `js`, `json`, `yml` and `yaml`).
 
+Barbell will automatically detect and use the `barbell.config.*` file that's in the current working directory, unless you specify a specific path to another.
+
 ```javascript
   module.exports = {
     // The root directory where barbell is running the benches
@@ -116,7 +118,7 @@ Aside from the CLI options, you can also configure via an external `barbell.conf
 
     // Glob patterns or paths of files/folders to exclude from running
     // see npm module `glob`'s option `exclude` for more info
-    exclude: ["node_modules"],
+    exclude: ["**/node_modules/**/*"],
 
     // The maximum number of benches to run at the same time
     concurrent: 2,
