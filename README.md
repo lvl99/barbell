@@ -12,16 +12,16 @@ I wanted something like Jest but for performance testing:
 - Helps developers to be aware of how slow/fast their code is.
 - Set expectations on code performance to see if your code meets them (see [v0.2.0 To do](https://github.com/lvl99/barbell/projects/1)).
 
-> **Note:** Barbell performs tests within a Node.JS environment, not within a browser. If you want to test within a browser, use [Benchmark JS](https://benchmarkjs.com/) or [jsPerf](https://jsperf.com/).
+> **Note:** Barbell performs tests within a Node.JS environment, not within a browser. If you want to test within a browser, use [Benchmark JS](https://benchmarkjs.com/) or [jsPerf](https://jsperf.com/) (see [v0.2.0 To do](https://github.com/lvl99/barbell/projects/1)).
 
 ## Installation
 
 ```sh
-  # npm
-  npm i barbell --save-dev
+# npm
+npm i barbell --save-dev
 
-  # yarn
-  yarn add barbell --dev
+# yarn
+yarn add barbell --dev
 ```
 
 ## Usage
@@ -54,7 +54,7 @@ suite("some code I want to test", () => {
 
 Then run `barbell` in your terminal to see your results:
 
-![Barbell in action](/screenshot.gif)
+![Barbell in action](//unpkg.com/barbell@0.1.2/screenshot.gif)
 
 ## CLI options
 
@@ -69,11 +69,14 @@ Options:
   -c, --config <path>                 Set path to config file
   -t, --test-match [globPatterns...]  Set the test match glob(s) to detect
                                       benchmark tests or test file paths
-                                      (default: ["**/?(__(tests|benches)__)/**/*.bench.?(t|j)s?(x)","**/*.bench.?(t|j)s?(x)"])
+                                      (default: [
+                                        "**/?(__(tests|benches)__)/**/*.bench.?(t|j)s?(x)",
+                                        "**/*.bench.?(t|j)s?(x)"
+                                      ])
   -e, --exclude [globPatterns...]     Exclude specific files and folders
                                       (default: ["**/node_modules/**/*"])
-  -C, --concurrent                    The number of benches you want to run at
-                                      the same time
+  -C, --concurrent                    The number of benches you want to run
+                                      at the same time
                                       (default: 2)
   -x, --stop-on-errors                Stop Barbell if any errors are found
                                       within test suites

@@ -113,7 +113,7 @@ suite("Get shallow prop from object (using array)", () => {
     objectPath.get(testObject, ["testA"]);
   });
 
-  test.skip("objectGet", () => {
+  test.skip("objectGet (should be skipped)", () => {
     // Not supported by objectGet
     objectGet(testObject, ["testA"]);
   });

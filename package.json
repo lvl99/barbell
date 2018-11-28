@@ -1,6 +1,6 @@
 {
   "name": "barbell",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Easily benchmark your JS code's performance via CLI using similar (but different) interface to Jest.",
   "main": "index.js",
   "bin": {
@@ -21,6 +21,12 @@
     "optimize",
     "optimise"
   ],
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/lvl99/barbell.git"
+  },
+  "homepage": "https://github.com/lvl99/barbell",
+  "bugs": "https://github.com/lvl99/barbell/issues",
   "author": "Matt Scheurich <matt@lvl99.com>",
   "license": "MIT",
   "dependencies": {
