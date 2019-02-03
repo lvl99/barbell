@@ -34,17 +34,17 @@
     "chalk": "2.4.2",
     "commander": "2.19.0",
     "glob": "7.1.3",
-    "http-server": "^0.11.1",
+    "http-server": "0.11.1",
     "js-yaml": "3.12.1",
     "listr": "0.14.3",
     "lodash": "4.17.11",
-    "rxjs": "6.3.3",
+    "rxjs": "6.4.0",
     "uuid": "3.3.2",
-    "vm2": "3.6.6"
+    "vm2": "3.6.10"
   },
   "devDependencies": {
-    "jest": "^23.6.0",
-    "jest-cli": "^23.6.0",
+    "jest": "^24.0.0",
+    "jest-cli": "^24.0.0",
     "object-get": "^2.1.0",
     "object-path": "^0.11.4"
   }
