@@ -6,6 +6,7 @@
 .DS_Store
 Thumbs.db
 
+coverage
 node_modules
 *.logs
 logs

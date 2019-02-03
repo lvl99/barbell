@@ -35,26 +35,26 @@ Each bench file can contain benchmark test suites and individual tests. Think of
 
 const functionToTest = (...inputs) => {
   return inputs.reduce((acc, input) => acc + input, 0);
-}
+};
 
 suite("some code I want to test", () => {
   test("test variant #1", () => {
-    functionToTest(1, 2)
-  })
+    functionToTest(1, 2);
+  });
 
   test("test variant #2", () => {
-    functionToTest(1, 2, 4, 8, 16, 32)
-  })
+    functionToTest(1, 2, 4, 8, 16, 32);
+  });
 
   test("test variant #3", () => {
-    functionToTest(1000000, 2000000, 3000000, 4000000, 5000000)
-  })
-})
+    functionToTest(1000000, 2000000, 3000000, 4000000, 5000000);
+  });
+});
 ```
 
 Then run `barbell` in your terminal to see your results:
 
-![Barbell in action](//unpkg.com/barbell@0.1.2/screenshot.gif)
+![Barbell in action](//unpkg.com/barbell@0.1.3/screenshot.gif)
 
 ## CLI options
 
@@ -108,38 +108,38 @@ Aside from the CLI options, you can also configure via an external `barbell.conf
 Barbell will automatically detect and use the `barbell.config.*` file that's in the current working directory, unless you specify a specific path to another.
 
 ```javascript
-  module.exports = {
-    // The root directory where barbell is running the benches
-    rootDir: process.cwd(),
+module.exports = {
+  // The root directory where barbell is running the benches
+  rootDir: process.cwd(),
 
-    // The glob patterns to find bench files or specific bench files to run
-    // see npm module `glob` for more info
-    testMatch: [
-      "**/?(__(tests|benches)__)/**/*.bench.?(t|j)s?(x)",
-      "**/*.bench.?(t|j)s?(x)"
-    ],
+  // The glob patterns to find bench files or specific bench files to run
+  // see npm module `glob` for more info
+  testMatch: [
+    "**/?(__(tests|benches)__)/**/*.bench.?(t|j)s?(x)",
+    "**/*.bench.?(t|j)s?(x)"
+  ],
 
-    // Glob patterns or paths of files/folders to exclude from running
-    // see npm module `glob`'s option `exclude` for more info
-    exclude: ["**/node_modules/**/*"],
+  // Glob patterns or paths of files/folders to exclude from running
+  // see npm module `glob`'s option `exclude` for more info
+  exclude: ["**/node_modules/**/*"],
 
-    // The maximum number of benches to run at the same time
-    concurrent: 2,
+  // The maximum number of benches to run at the same time
+  concurrent: 2,
 
-    // Stop barbell if any errors in test suites occur
-    stopOnErrors: false,
+  // Stop barbell if any errors in test suites occur
+  stopOnErrors: false,
 
-    // Verbose mode (outputs config settings)
-    verbose: false,
+  // Verbose mode (outputs config settings)
+  verbose: false,
 
-    // Advanced: the package name, script path or custom function to run bench files with
-    // See ./lib/runner.js for more info
-    runner: "barbell/lib/runner",
+  // Advanced: the package name, script path or custom function to run bench files with
+  // See ./lib/runner.js for more info
+  runner: "barbell/lib/runner",
 
-    // Advanced: the package name, script path or custom function to output a report
-    // See ./lib/reporter.js for more info
-    reporter: "barbell/lib/reporter"
-  }
+  // Advanced: the package name, script path or custom function to output a report
+  // See ./lib/reporter.js for more info
+  reporter: "barbell/lib/reporter"
+};
 ```
 
 ## Development
