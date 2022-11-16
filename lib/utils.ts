@@ -89,9 +89,23 @@ export function toArray(input: any | any[]): any[] {
     : [];
 }
 
-export function useFirstNonEmptyArray(...input: any[]): any[] {
-  const output = input.find((x) => !!x.length);
+export function useFirstValid(
+  validate: (input: any) => boolean,
+  ...input: any[]
+): any {
+  const output =
+    typeof validate === "function"
+      ? input.find((x) => validate(x))
+      : input !== undefined;
   return output ? output : input.pop();
+}
+
+export function useFirstDefined(...input: any[]): any {
+  return useFirstValid((x) => x !== undefined, ...input);
+}
+
+export function useFirstNonEmptyArray(...input: any[]): any[] {
+  return useFirstValid((x) => x.length, ...input);
 }
 
 export function formatNumber(

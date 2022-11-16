@@ -23,6 +23,8 @@ export interface FormatTimeDurationOptions {
 export declare const DEFAULT_FORMAT_TIME_DURATION_OPTIONS: FormatTimeDurationOptions;
 export declare function round(input: number, decimalPlaces?: number): number;
 export declare function toArray(input: any | any[]): any[];
+export declare function useFirstValid(validate: (input: any) => boolean, ...input: any[]): any;
+export declare function useFirstDefined(...input: any[]): any;
 export declare function useFirstNonEmptyArray(...input: any[]): any[];
 export declare function formatNumber(input: any, delimiter?: string, decimal?: string): string;
 export declare function getTimeFromDate(input: DateOrTime): number;

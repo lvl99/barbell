@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.reporter = void 0;
+exports.reporterHTML = void 0;
 var tslib_1 = require("tslib");
 var node_path_1 = tslib_1.__importDefault(require("node:path"));
 var node_fs_1 = tslib_1.__importDefault(require("node:fs"));
@@ -17,7 +17,7 @@ function ensureDirectoryExistence(filePath) {
 function renderHTML(date, stats, content) {
     return "<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\">\n    <title>Barbell results</title>\n    <style>\n      * {\n        box-sizing: border-box;\n      }\n\n      body {\n        font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n        font-size: 16px;\n        line-height: 1.5em;\n      }\n\n      dl.stats {\n        /*\n        display: grid;\n        grid-template-columns: 1fr 1fr;\n        grid-template-areas: \"dt\" \"dd\";\n        grid-column-gap: 1em;\n        grid-row-gap: 0.4em;\n        */\n\n        width: 300px;\n        overflow: hidden;\n      }\n\n      dl.stats dt {\n        /*\n        grid-area: \"dt\";\n        */\n\n       display: block;\n        margin: 0;\n        padding: 0;\n        float: left;\n        clear: left;\n        text-align: left;\n      }\n\n      dl.stats dd {\n        /*\n        grid-area: \"dd\";\n        */\n\n        display: block;\n        margin: 0;\n        padding: 0 0 0 0.3em;\n        float: left;\n        clear: right;\n        text-align: left;\n      }\n\n      .barbell {\n        max-width: 600px;\n        margin: 0 auto 2em;\n      }\n\n      .bench {\n        padding: 1em;\n        margin-bottom: 1em;\n        border: solid 1px #ddd;\n        background: #fff;\n      }\n\n      .suite {\n        margin-left: 1em;\n        margin-bottom: 1em;\n      }\n\n      .test {\n        margin-left: 1em;\n        margin-bottom: 1em;\n      }\n\n      .suite h2,\n      .suite h3,\n      .suite h4,\n      .test h2,\n      .test h3,\n      .test h4 {\n        margin-bottom: 0.4em;\n      }\n\n      .bench:last-child,\n      .suite:last-child,\n      .test:last-child {\n        margin-bottom: 0;\n      }\n\n      .stat {\n        color: #666;\n        font-style: italic;\n      }\n\n      .bar {\n        display: block;\n        width: 100%;\n        height: 10px;\n        position: relative;\n        background: #ddd;\n        overflow: hidden;\n      }\n\n      .bar .bar-progress {\n        display: block;\n        width: 3000%;\n        height: 100%;\n        position: absolute;\n        left: -2900%;\n        top: 0;\n        background: linear-gradient(to right, #f00, #ff0, #0c3);\n      }\n\n      code pre {\n        padding: 10px;\n        margin-bottom: 10px;\n        background-color: #efefef;\n        color: #666;\n        font-family: \"Andale Mono\", \"Courier New\", Courier, mono;\n      }\n\n      .error code pre {\n        background-color: #fdd;\n        color: #600;\n      }\n    </style>\n  </head>\n  <body>\n    <div class=\"barbell\">\n      <h1>\uD83C\uDFCB\uFE0F\u200D\u2642\uFE0F Barbell results \uD83C\uDFCB\uFE0F\u200D\u2640\uFE0F</h1>\n      <div class=\"date\">".concat(date, "</div>\n      <div class=\"stats\">").concat(stats, "</div>\n      <div class=\"results\">\n        ").concat(content, "\n      </div>\n    </div>\n  </body>\n</html>");
 }
-var reporter = function (stack, barbellConfig) {
+var reporterHTML = function (stack, barbellConfig) {
     var benches = Object.values(stack);
     var barbellStartTime = benches[0].startTime;
     var barbellEndTime = benches[benches.length - 1].endTime;
@@ -183,6 +183,6 @@ var reporter = function (stack, barbellConfig) {
             return output;
     }
 };
-exports.reporter = reporter;
-exports.default = exports.reporter;
+exports.reporterHTML = reporterHTML;
+exports.default = exports.reporterHTML;
 //# sourceMappingURL=reporter-html.js.map

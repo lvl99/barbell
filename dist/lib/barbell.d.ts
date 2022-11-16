@@ -100,7 +100,6 @@ export declare const DEFAULT_CONFIG: Readonly<{
     concurrent: 2;
     stopOnErrors: false;
     verbose: false;
-    debug: false;
     runner: "barbell-runner";
     reporter: "barbell-reporter";
 }>;

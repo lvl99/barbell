@@ -164,7 +164,7 @@ function renderHTML(date: string, stats: string, content: string) {
 </html>`;
 }
 
-export const reporter: Reporter = function (
+export const reporterHTML: Reporter = function (
   stack: Stack,
   barbellConfig: Config
 ): string | void {
@@ -433,4 +433,4 @@ export const reporter: Reporter = function (
   }
 };
 
-export default reporter;
+export default reporterHTML;

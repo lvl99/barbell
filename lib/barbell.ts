@@ -127,7 +127,7 @@ const BUILT_IN_MODULES: { [key: string]: string | Module } = {
 };
 
 export const DEFAULT_TEST_MATCH = [
-  "**/?(__benches__)/**/*(.bench)?.[tj]s",
+  "**/__benches__/**/*(.bench)?.[tj]s",
   "**/*.bench.[tj]s",
 ];
 
@@ -139,7 +139,6 @@ export const DEFAULT_CONFIG = Object.freeze({
   concurrent: 2,
   stopOnErrors: false,
   verbose: false,
-  debug: false,
   runner: "barbell-runner",
   reporter: "barbell-reporter",
 });
@@ -247,7 +246,9 @@ async function getModule<T = any>(
 
 async function barbell(testMatch: string[], options: ConfigOptions) {
   const stack = {};
-  let loadedConfig = await getConfig(options.configPath);
+  let loadedConfig = options.configPath
+    ? await getConfig(options.configPath)
+    : {};
 
   const defaultRootDir = await findUp("package.json").then((pkgPath) =>
     pkgPath ? path.dirname(pkgPath) : path.join(__dirname, "..", "..")
@@ -255,26 +256,54 @@ async function barbell(testMatch: string[], options: ConfigOptions) {
 
   const config: Omit<ConfigOptions, "rootDir"> &
     Required<Pick<ConfigOptions, "rootDir">> = {
-    ...DEFAULT_CONFIG,
-    rootDir: options.rootDir || defaultRootDir,
+    rootDir: utils.useFirstDefined(
+      options.rootDir,
+      loadedConfig.rootDir,
+      defaultRootDir
+    ),
     configPath: options.configPath || "",
     testMatch: [
       ...utils.useFirstNonEmptyArray(
         testMatch,
         options.testMatch,
+        loadedConfig.testMatch,
         DEFAULT_TEST_MATCH
       ),
     ],
     exclude: [
       ...utils.useFirstNonEmptyArray(options.exclude, DEFAULT_CONFIG.exclude),
     ],
-    stopOnErrors: !!options.stopOnErrors,
-    concurrent:
-      options.concurrent && options.concurrent > 0
-        ? options.concurrent
-        : DEFAULT_CONFIG.concurrent,
-    reporterConfig: options.reporterConfig || {},
-    ...loadedConfig,
+    concurrent: utils.useFirstValid(
+      (x) => typeof x === "number" && x > 0,
+      options.concurrent,
+      loadedConfig.concurrent,
+      DEFAULT_CONFIG.concurrent
+    ),
+    stopOnErrors: utils.useFirstDefined(
+      options.stopOnErrors,
+      loadedConfig.stopOnErrors,
+      DEFAULT_CONFIG.stopOnErrors
+    ),
+    verbose: utils.useFirstDefined(
+      options.verbose,
+      loadedConfig.verbose,
+      DEFAULT_CONFIG.verbose
+    ),
+    runner: utils.useFirstDefined(
+      options.runner,
+      loadedConfig.runner,
+      DEFAULT_CONFIG.runner
+    ),
+    reporter: utils.useFirstDefined(
+      options.reporter,
+      loadedConfig.reporter,
+      DEFAULT_CONFIG.reporter
+    ),
+    reporterConfig: utils.useFirstDefined(
+      options.reporterConfig,
+      loadedConfig.reporterConfig,
+      {}
+    ),
   };
 
   // Get the runner module or function
@@ -317,8 +346,6 @@ async function barbell(testMatch: string[], options: ConfigOptions) {
     console.log("\n📣 Barbell running in verbose mode\n");
     console.log(_config);
   }
-
-  console.log(_config);
 
   if (!_config.testMatch || !_config.testMatch.length) {
     console.error(chalk.red("No glob patterns were given to find tests!"));

@@ -4,5 +4,5 @@ export interface ReporterHTMLConfig {
     outputDir?: string;
     outputFileName?: string;
 }
-export declare const reporter: Reporter;
-export default reporter;
+export declare const reporterHTML: Reporter;
+export default reporterHTML;

@@ -55,6 +55,26 @@ describe("toArray", () => {
   });
 });
 
+describe("useFirstValid", () => {
+  it("should use the first valid value as per the validation function", () => {
+    expect(utils.useFirstValid((x) => x === 3, 1, 2, 3)).toEqual(3);
+  });
+
+  it("should use the last item, even if it doesn't match validation", () => {
+    expect(utils.useFirstValid((x) => x === 3, 1, 2, 4)).toEqual(4);
+  });
+});
+
+describe("useFirstDefined", () => {
+  it("should use the first defined value", () => {
+    expect(utils.useFirstDefined(undefined, undefined, 3)).toEqual(3);
+  });
+
+  it("should use the last item, even if it is empty", () => {
+    expect(utils.useFirstDefined(undefined, undefined)).toBeUndefined();
+  });
+});
+
 describe("useFirstNonEmptyArray", () => {
   it("should use the first array which is not empty", () => {
     expect(utils.useFirstNonEmptyArray([], [], [1, 2, 3])).toEqual(

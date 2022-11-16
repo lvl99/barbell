@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.filterUnique = exports.tellTime = exports.formatTimeDuration = exports.getTimeFromDate = exports.formatNumber = exports.useFirstNonEmptyArray = exports.toArray = exports.round = exports.DEFAULT_FORMAT_TIME_DURATION_OPTIONS = void 0;
+exports.filterUnique = exports.tellTime = exports.formatTimeDuration = exports.getTimeFromDate = exports.formatNumber = exports.useFirstNonEmptyArray = exports.useFirstDefined = exports.useFirstValid = exports.toArray = exports.round = exports.DEFAULT_FORMAT_TIME_DURATION_OPTIONS = void 0;
 var tslib_1 = require("tslib");
 var S = 1000;
 var M = 60 * S;
@@ -69,13 +69,31 @@ function toArray(input) {
             : [];
 }
 exports.toArray = toArray;
+function useFirstValid(validate) {
+    var input = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        input[_i - 1] = arguments[_i];
+    }
+    var output = typeof validate === "function"
+        ? input.find(function (x) { return validate(x); })
+        : input !== undefined;
+    return output ? output : input.pop();
+}
+exports.useFirstValid = useFirstValid;
+function useFirstDefined() {
+    var input = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        input[_i] = arguments[_i];
+    }
+    return useFirstValid.apply(void 0, tslib_1.__spreadArray([function (x) { return x !== undefined; }], input, false));
+}
+exports.useFirstDefined = useFirstDefined;
 function useFirstNonEmptyArray() {
     var input = [];
     for (var _i = 0; _i < arguments.length; _i++) {
         input[_i] = arguments[_i];
     }
-    var output = input.find(function (x) { return !!x.length; });
-    return output ? output : input.pop();
+    return useFirstValid.apply(void 0, tslib_1.__spreadArray([function (x) { return x.length; }], input, false));
 }
 exports.useFirstNonEmptyArray = useFirstNonEmptyArray;
 function formatNumber(input, delimiter, decimal) {
