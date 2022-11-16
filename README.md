@@ -1,4 +1,4 @@
-# 🏋️‍ Barbell
+# 🏋️‍ Barbell 🏋️‍♀️
 
 Easily benchmark your code's performance via CLI using similar (but different) interface to Jest.
 
@@ -116,7 +116,7 @@ module.exports = {
   // see npm module `glob` for more info
   testMatch: [
     "**/?(__(tests|benches)__)/**/*.bench.?(t|j)s?(x)",
-    "**/*.bench.?(t|j)s?(x)"
+    "**/*.bench.?(t|j)s?(x)",
   ],
 
   // Glob patterns or paths of files/folders to exclude from running
@@ -138,7 +138,7 @@ module.exports = {
 
   // Advanced: the package name, script path or custom function to output a report
   // See ./lib/reporter.js for more info
-  reporter: "barbell/lib/reporter"
+  reporter: "barbell/lib/reporter",
 };
 ```
 
@@ -165,9 +165,8 @@ To run benchmark tests:
 ## Contribute
 
 Have suggestions, questions or feedback? Found a bug? [Post an issue](https://github.com/lvl99/barbell/issues)
-
 Added a feature? Fixed a bug? [Post a PR](https://github.com/lvl99/barbell/compare)
 
 ## License
 
-[MIT](LICENSE.md)
+[Apache-2.0](LICENSE.md)

@@ -1,4 +1,4 @@
-const utils = require("../lib/utils");
+import * as utils from "../lib/utils";
 
 describe("round", () => {
   it("should round to the specified decimal place", () => {
@@ -52,6 +52,19 @@ describe("toArray", () => {
     expect(testToArray).toBeInstanceOf(Array);
     expect(testToArray).toHaveLength(1);
     expect(testToArray[0]).toBe("test");
+  });
+});
+
+describe("useFirstNonEmptyArray", () => {
+  it("should use the first array which is not empty", () => {
+    expect(utils.useFirstNonEmptyArray([], [], [1, 2, 3])).toEqual(
+      expect.arrayContaining([1, 2, 3])
+    );
+  });
+
+  it("should use the last array, even if it is empty", () => {
+    const lastArray: any[] = [];
+    expect(utils.useFirstNonEmptyArray([], [], lastArray)).toEqual(lastArray);
   });
 });
 

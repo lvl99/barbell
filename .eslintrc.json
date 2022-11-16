@@ -4,10 +4,18 @@
     "node": true,
     "jest": true
   },
-  "extends": ["plugin:prettier/recommended"],
-  "parser": "babel-eslint",
+  "extends": [
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "prettier/@typescript-eslint"
+  ],
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/no-use-before-define": 0
+  },
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "sourceType": "module",
-    "ecmaVersion": 2018
+    "project": "./tsconfig.eslint.json"
   }
 }

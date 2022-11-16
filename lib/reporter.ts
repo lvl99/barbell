@@ -1,10 +1,14 @@
-const chalk = require("chalk");
-const utils = require("./utils");
+import chalk from "chalk";
+import { Reporter, Stack, Config } from "./barbell";
+import * as utils from "./utils";
 
-function barbellReporter(stack, barbellConfig) {
+export const reporter: Reporter = function (
+  stack: Stack,
+  barbellConfig: Config
+): string | void {
   console.log("\nBarbell results:");
 
-  Object.values(stack).forEach(bench => {
+  Object.values(stack).forEach((bench) => {
     console.log(
       chalk.white(
         `\n${bench.relativePath}${bench.errored ? chalk.red(" (errored)") : ""}`
@@ -12,14 +16,16 @@ function barbellReporter(stack, barbellConfig) {
     );
     if (bench.errored) {
       if (bench.error) {
-        console.log(chalk.red(`\n${bench.error.stack}`));
+        console.log(chalk.red(`\n${(bench.error as Error).stack}`));
       }
     } else {
-      Object.values(bench.suites).forEach(suite => {
-        const suiteTests = suite.instance.map(test => test);
+      Object.values(bench.suites).forEach((suite) => {
+        const suiteTests = suite.instance.map(
+          (test: Function | string) => test
+        );
         const barLength = 15;
-        let slowestTestSpeed = null;
-        let fastestTestSpeed = null;
+        let slowestTestSpeed: number;
+        let fastestTestSpeed: number;
         let totalSpeedDiff = 0;
 
         console.log(
@@ -40,13 +46,13 @@ function barbellReporter(stack, barbellConfig) {
           )}`
         );
 
-        if (suite.errored) {
-          suite.errors.forEach(error =>
+        if (suite.errored && suite.errors && suite.errors.length) {
+          suite.errors.forEach((error: Error) =>
             console.log(chalk.red(`\n${error.stack}`))
           );
         } else {
           Object.values(suite.tests)
-            .map(test => {
+            .map((test) => {
               if (
                 !test.errored &&
                 !test.skipped &&
@@ -188,6 +194,6 @@ function barbellReporter(stack, barbellConfig) {
       });
     }
   });
-}
+};
 
-module.exports = barbellReporter;
+export default reporter;

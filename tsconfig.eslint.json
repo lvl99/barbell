@@ -1,0 +1,9 @@
+{
+  "compilerOptions": { "strict": true },
+  "include": [
+    "index.ts",
+    "declarations/**/*.ts",
+    "lib/**/*.ts",
+    "__tests__/**/*.ts"
+  ]
+}
