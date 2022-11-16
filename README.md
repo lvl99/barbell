@@ -173,7 +173,7 @@ To run benchmark tests:
 ## Contribute
 
 Have suggestions, questions or feedback? Found a bug? [Post an issue](https://github.com/lvl99/barbell/issues)
-Added a feature? Fixed a bug? [Post a PR](https://github.com/lvl99/barbell/compare)
+Added a feature? Fixed a bug? Wrote some much needed tests? [Post a PR](https://github.com/lvl99/barbell/compare)
 
 ## License
 
