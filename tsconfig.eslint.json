@@ -4,6 +4,7 @@
     "index.ts",
     "declarations/**/*.ts",
     "lib/**/*.ts",
-    "__tests__/**/*.ts"
+    "__tests__/**/*.ts",
+    "__benches__/**/*.js"
   ]
 }
