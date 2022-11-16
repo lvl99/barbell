@@ -52,7 +52,7 @@ suite("some code I want to test", () => {
 });
 ```
 
-Then run `barbell` in your terminal to see your results:
+Then run `barbell` (or `npx barbell`) in your terminal to see your results:
 
 ![Barbell in action](//unpkg.com/barbell@0.1.3/screenshot.gif)
 
