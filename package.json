@@ -1,17 +1,23 @@
 {
   "name": "barbell",
-  "version": "0.1.4",
+  "version": "1.0.0",
   "description": "Easily benchmark your JS code's performance via CLI using similar (but different) interface to Jest.",
-  "main": "index.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "bin": {
-    "barbell": "index.js"
+    "barbell": "./dist/index.js"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">=12"
   },
   "scripts": {
+    "build": "rm -rf ./dist && tsc",
+    "lint": "eslint 'index.ts' './declarations/**/*.ts' './__tests__/**/*.ts' './lib/**/*.ts' -c .eslintrc.json --ignore-path .lintignore",
+    "lint:fix": "eslint 'index.ts' './declarations/**/*.ts' './__tests__/**/*.ts' './lib/**/*.ts' -c .eslintrc.json --ignore-path .lintignore --fix",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "bench": "node ./dist/lib/cli.js -v",
+    "pre-publish": "npm run lint && npm run build && npm run test"
   },
   "keywords": [
     "test",
@@ -31,21 +37,40 @@
   "license": "MIT",
   "dependencies": {
     "benchmark": "2.1.4",
-    "chalk": "2.4.2",
-    "commander": "2.19.0",
-    "glob": "7.1.3",
-    "http-server": "0.11.1",
-    "js-yaml": "3.12.1",
+    "chalk": "4.1.2",
+    "commander": "9.4.1",
+    "eslint-plugin-jest": "^27.1.5",
+    "find-up": "5.0.0",
+    "glob": "8.0.3",
+    "js-yaml": "4.1.0",
     "listr": "0.14.3",
-    "lodash": "4.17.11",
-    "rxjs": "6.4.0",
-    "uuid": "3.3.2",
-    "vm2": "3.6.10"
+    "lodash": "4.17.21",
+    "pkg-dir": "7.0.0",
+    "rxjs": "7.5.7",
+    "tslib": "2.4.1",
+    "uuid": "9.0.0",
+    "vm2": "3.9.11"
   },
   "devDependencies": {
-    "jest": "^24.0.0",
-    "jest-cli": "^24.0.0",
-    "object-get": "^2.1.0",
-    "object-path": "^0.11.4"
+    "@types/benchmark": "^2.1.2",
+    "@types/glob": "^8.0.0",
+    "@types/jest": "^29.2.3",
+    "@types/js-yaml": "^4.0.5",
+    "@types/listr": "^0.14.4",
+    "@types/lodash": "^4.14.189",
+    "@types/node-fetch": "^2.6.2",
+    "@types/uuid": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.43.0",
+    "@typescript-eslint/parser": "^5.43.0",
+    "eslint": "^8.27.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "jest": "^29.3.1",
+    "jest-cli": "^29.3.1",
+    "object-get": "^2.1.1",
+    "object-path": "^0.11.8",
+    "prettier": "^2.7.1",
+    "ts-jest": "^29.0.3",
+    "typescript": "^4.9.3"
   }
 }

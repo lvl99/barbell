@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "lib": ["ESNext"],
+    "target": "ES5",
+    "module": "commonjs",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "checkJs": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "importHelpers": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "baseUrl": "./",
+    "paths": {
+      "tslib": ["node_modules/tslib/tslib.d.ts"]
+    }
+  },
+  "include": ["index.ts", "declarations", "lib"],
+  "exclude": ["node_modules", "dist", "__tests__", "**/*.?(test|spec).ts"]
+}

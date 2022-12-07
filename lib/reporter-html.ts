@@ -1,8 +1,17 @@
-const path = require("path");
-const fs = require("fs");
-const utils = require("./utils");
+import path from "node:path";
+import fs from "node:fs";
+import * as utils from "./utils";
+import { Stack, Reporter, Config } from "./barbell";
 
-function ensureDirectoryExistence(filePath) {
+export interface ReporterHTMLConfig {
+  outputFormat?: string;
+  outputDir?: string;
+  outputFileName?: string;
+}
+
+const rankingEmojis = ["🏆", "🥈", "🥉"];
+
+function ensureDirectoryExistence(filePath: string) {
   const dirname = path.dirname(filePath);
   if (fs.existsSync(dirname)) {
     return true;
@@ -11,7 +20,7 @@ function ensureDirectoryExistence(filePath) {
   fs.mkdirSync(dirname);
 }
 
-function renderHtml(date, stats, content) {
+function renderHTML(date: string, stats: string, content: string) {
   return `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -155,9 +164,10 @@ function renderHtml(date, stats, content) {
 </html>`;
 }
 
-const rankingEmojis = ["🏆", "🥈", "🥉"];
-
-function barbellReporter(stack, barbellConfig) {
+export const reporterHTML: Reporter = function (
+  stack: Stack,
+  barbellConfig: Config
+): string | void {
   const benches = Object.values(stack);
   const barbellStartTime = benches[0].startTime;
   const barbellEndTime = benches[benches.length - 1].endTime;
@@ -165,8 +175,8 @@ function barbellReporter(stack, barbellConfig) {
   let totalTests = 0;
   const stats = [];
 
-  const content = [];
-  benches.forEach(bench => {
+  const content: string[] = [];
+  benches.forEach((bench) => {
     const benchSuites = Object.values(bench.suites);
     totalSuites += benchSuites.length;
     content.push(`<div id=${bench.key} class="bench">`);
@@ -179,25 +189,24 @@ function barbellReporter(stack, barbellConfig) {
       )}</dt>`
     );
     content.push(
-      `<dt class="stat total-suites">Total suites:</dt><dd class="stat total-suites">${
-        benchSuites.length
-      }</dd>`
+      `<dt class="stat total-suites">Total suites:</dt><dd class="stat total-suites">${benchSuites.length}</dd>`
     );
     content.push(`</dl>`);
     if (bench.errored) {
       if (bench.error) {
         content.push(
           `<div class="error"><code><pre>${
-            bench.error.stack
+            (bench.error as Error).stack
           }</pre></code></div>`
         );
       }
     } else {
-      benchSuites.forEach(suite => {
-        const suiteTests = suite.instance.map(test => test);
+      benchSuites.forEach((suite) => {
+        // @ts-ignore
+        const suiteTests = suite.instance.map((test) => test);
         totalTests += suiteTests.length;
-        let slowestTestSpeed = null;
-        let fastestTestSpeed = null;
+        let slowestTestSpeed: number;
+        let fastestTestSpeed: number;
         let totalSpeedDiff = 0;
 
         content.push(`<div id=${suite.key} class="suite">`);
@@ -210,9 +219,7 @@ function barbellReporter(stack, barbellConfig) {
         );
         content.push(`<dl class="stats">`);
         content.push(
-          `<dt class="stat total-tests">Total tests:</dt><dd class="stat total-tests">${
-            suiteTests.length
-          }</dt>`
+          `<dt class="stat total-tests">Total tests:</dt><dd class="stat total-tests">${suiteTests.length}</dt>`
         );
         content.push(
           `<dt class="stat time-taken">Time taken:</dt><dd class="stat time-taken">${utils.tellTime(
@@ -223,14 +230,14 @@ function barbellReporter(stack, barbellConfig) {
         content.push(`</dl>`);
 
         if (suite.errored) {
-          suite.errors.forEach(error =>
+          suite.errors.forEach((error) =>
             content.push(
               `<div class="error"><code><pre>${error.stack}</pre></code></div>`
             )
           );
         } else {
           Object.values(suite.tests)
-            .map(test => {
+            .map((test) => {
               if (
                 !test.errored &&
                 !test.skipped &&
@@ -290,9 +297,9 @@ function barbellReporter(stack, barbellConfig) {
 
               // Errored test
               if (test.errored) {
-                testContent = `${test.instance.error ||
-                  test.error ||
-                  "Unknown error"}`;
+                testContent = `${
+                  test.instance.error || test.error || "Unknown error"
+                }`;
               }
               // Completed test
               else if (
@@ -391,35 +398,27 @@ function barbellReporter(stack, barbellConfig) {
   stats.push(`</dl>`);
 
   const outputDate = new Date();
-  const output = renderHtml(
+  const output = renderHTML(
     outputDate.toISOString(),
     stats.join("\n"),
     content.join("\n")
   );
 
-  let reporterHtmlConfig = {
+  let reporterConfig: Required<ReporterHTMLConfig> = {
     outputFormat: "file",
     outputDir: path.join(barbellConfig.rootDir, "./coverage/barbell"),
-    outputFileName: undefined
+    outputFileName: undefined,
+    ...barbellConfig.reporterConfig,
   };
-  if (barbellConfig.hasOwnProperty("reporterHtml")) {
-    reporterHtmlConfig = {
-      ...reporterHtmlConfig,
-      ...barbellConfig.reporterHtml
-    };
-  }
 
-  const outputFileName = reporterHtmlConfig.outputFileName
-    ? reporterHtmlConfig.outputFileName
-    : outputDate.toISOString().replace(/:/g, "_") + "_results.html";
+  const outputFileName = reporterConfig.outputFileName
+    ? reporterConfig.outputFileName
+    : outputDate.toISOString().replace(/:/g, "_") + "_results.HTML";
 
-  switch (reporterHtmlConfig.outputFormat) {
+  switch (reporterConfig.outputFormat) {
     default:
     case "file":
-      const outputPath = path.join(
-        reporterHtmlConfig.outputDir,
-        outputFileName
-      );
+      const outputPath = path.join(reporterConfig.outputDir, outputFileName);
       ensureDirectoryExistence(outputPath);
       fs.writeFileSync(outputPath, output, "utf8");
       console.log(`\n  📊  Results: ${outputPath}`);
@@ -432,6 +431,6 @@ function barbellReporter(stack, barbellConfig) {
     case "return":
       return output;
   }
-}
+};
 
-module.exports = barbellReporter;
+export default reporterHTML;

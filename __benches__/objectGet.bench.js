@@ -1,4 +1,4 @@
-const lodash = require("lodash");
+const get = require("lodash/get");
 const objectPath = require("object-path");
 const objectGet = require("object-get");
 
@@ -6,7 +6,7 @@ const RE_VALID_NUMBERED_ARRAY_KEY = /^\d+$/;
 const RE_OBJECT_PATH_PARTS = /\.|\[(\d+)\]/;
 const RE_OBJECT_PATH_SPLIT = /\.|\[|\]\.?/;
 
-function get(input, prop, defaultValue) {
+function getProp(input, prop, defaultValue) {
   // Invalid input/prop given? Return defaultValue or undefined
   if (
     input === undefined ||
@@ -41,7 +41,7 @@ function get(input, prop, defaultValue) {
     prop instanceof Array
       ? prop
       : typeof prop === "string" && RE_OBJECT_PATH_PARTS.test(prop)
-      ? prop.split(RE_OBJECT_PATH_SPLIT).filter(propPart => propPart)
+      ? prop.split(RE_OBJECT_PATH_SPLIT).filter((propPart) => propPart)
       : undefined;
 
   if (!path) {
@@ -61,7 +61,7 @@ const testObject = {
       testC: {
         testD: [
           {
-            testE: true
+            testE: true,
           },
           {
             testF: {
@@ -71,24 +71,24 @@ const testObject = {
                     testJ: {
                       testK: {
                         testL: {
-                          testM: [false, false, true]
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        ]
-      }
-    }
-  }
+                          testM: [false, false, true],
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
+      },
+    },
+  },
 };
 
 suite("Get shallow prop from object (using string)", () => {
   test("lodash.get", () => {
-    lodash.get(testObject, "testA");
+    get(testObject, "testA");
   });
 
   test("objectPath.get", () => {
@@ -100,13 +100,13 @@ suite("Get shallow prop from object (using string)", () => {
   });
 
   test("My custom get function", () => {
-    get(testObject, "testA");
+    getProp(testObject, "testA");
   });
 });
 
 suite("Get shallow prop from object (using array)", () => {
   test("lodash.get", () => {
-    lodash.get(testObject, ["testA"]);
+    get(testObject, ["testA"]);
   });
 
   test("objectPath.get", () => {
@@ -119,13 +119,13 @@ suite("Get shallow prop from object (using array)", () => {
   });
 
   test("My custom get function which shouldn't be skipped", () => {
-    get(testObject, ["testA"]);
+    getProp(testObject, ["testA"]);
   });
 });
 
 suite("Get nested prop from object (using string)", () => {
   test("lodash.get", () => {
-    lodash.get(testObject, "testA.testB.testC.testD[0].testE");
+    get(testObject, "testA.testB.testC.testD[0].testE");
   });
 
   test("objectPath.get", () => {
@@ -137,13 +137,13 @@ suite("Get nested prop from object (using string)", () => {
   });
 
   test("My custom get function", () => {
-    get(testObject, "testA.testB.testC.testD[0].testE");
+    getProp(testObject, "testA.testB.testC.testD[0].testE");
   });
 });
 
 suite("Get nested prop from object (using array)", () => {
   test("lodash.get", () => {
-    lodash.get(testObject, ["testA", "testB", "testC", "testD", 0, "testE"]);
+    get(testObject, ["testA", "testB", "testC", "testD", 0, "testE"]);
   });
 
   test("objectPath.get", () => {
@@ -153,7 +153,7 @@ suite("Get nested prop from object (using array)", () => {
       "testC",
       "testD",
       0,
-      "testE"
+      "testE",
     ]);
   });
 
@@ -163,13 +163,13 @@ suite("Get nested prop from object (using array)", () => {
   });
 
   test("My custom get function", () => {
-    get(testObject, ["testA", "testB", "testC", "testD", 0, "testE"]);
+    getProp(testObject, ["testA", "testB", "testC", "testD", 0, "testE"]);
   });
 });
 
 suite("Get deeply nested prop from object (using string)", () => {
   test("lodash.get", () => {
-    lodash.get(
+    get(
       testObject,
       "testA.testB.testC.testD[1].testF.testG.testH.testI.testJ.testK.testL.testM[2]"
     );
@@ -190,7 +190,7 @@ suite("Get deeply nested prop from object (using string)", () => {
   });
 
   test("My custom get function", () => {
-    get(
+    getProp(
       testObject,
       "testA.testB.testC.testD[1].testF.testG.testH.testI.testJ.testK.testL.testM[2]"
     );

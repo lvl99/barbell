@@ -1,47 +1,74 @@
-const path = require("path");
-const fs = require("fs");
-const Benchmark = require("benchmark");
-const uuid = require("uuid/v4");
-const chalk = require("chalk");
-const utils = require("./utils");
-const { Subject } = require("rxjs");
-const { NodeVM } = require("vm2");
+import path from "node:path";
+import fs from "node:fs";
+import Benchmark from "benchmark";
+import { v4 as uuid } from "uuid";
+import chalk from "chalk";
+import { Subject } from "rxjs";
+import { NodeVM } from "vm2";
+import {
+  Bench,
+  Stack,
+  Suite,
+  SuiteOptions,
+  Suites,
+  Test,
+  TestOptions,
+  Tests,
+  Runner,
+  Config,
+  Output,
+} from "./barbell";
+import * as utils from "./utils";
 
-function NOOP() {}
+function NOOP(): void {}
 
-function sandboxSetTimeout(fn) {
-  fn.call(this);
+function sandboxSetTimeout(callback: () => void, ms?: number): void {
+  // @ts-ignore
+  callback.call(this);
 }
-function sandboxSetInterval(fn) {
-  fn.call(this);
+function sandboxSetInterval(callback: () => void, ms?: number): void {
+  // @ts-ignore
+  callback.call(this);
 }
-function sandboxSetImmediate(fn) {
-  fn.call(this);
+function sandboxSetImmediate(callback: () => void): void {
+  // @ts-ignore
+  callback.call(this);
 }
 
-function barbellRunner(benchPath, stack, barbellConfig) {
-  const progress = new Subject();
+/**
+ * Run the suite(s) of tests per bench file.
+ */
+export const runner: Runner = function (
+  benchPath: string,
+  stack: Stack,
+  barbellConfig: Config
+): Output {
+  const output = new Subject<string | number>();
   const fileName = path.basename(benchPath);
   const relativePath = benchPath.replace(`${barbellConfig.rootDir}/`, "./");
 
-  const bench = {
+  const bench: Bench = {
     key: `bench-${uuid()}`,
     name: fileName,
     path: benchPath,
     relativePath: relativePath,
     startTime: new Date(),
-    endTime: 0,
+    endTime: null,
     progress: 0,
     completed: false,
     errored: false,
-    error: null,
+    error: undefined,
     suites: {},
-    results: {},
-    output: progress
+    results: {
+      stats: {},
+      times: {},
+      speed: 0,
+    },
+    output,
   };
 
   let countSuites = 0;
-  let currentSuite = null;
+  let currentSuite: Suite | undefined;
 
   function incrementBenchProgress() {
     ++bench.progress;
@@ -58,15 +85,20 @@ function barbellRunner(benchPath, stack, barbellConfig) {
     }
   }
 
-  function addSuite(suiteName, suiteFn, suiteOptions) {
+  function addSuite(
+    suiteName: string,
+    suiteFn: () => void,
+    suiteOptions?: SuiteOptions
+  ): void {
     const numSuite = ++countSuites;
     const _suiteKey = `suite-${uuid()}`;
     const _suite = new Benchmark.Suite(suiteName, {
-      onStart: function() {
+      onStart: function () {
         bench.suites[_suiteKey].startTime = new Date();
         bench.output.next(`Repping Suite #${numSuite}: ${suiteName}...`);
       },
-      onError: function(event) {
+      // @ts-ignore
+      onError: function (event) {
         bench.suites[_suiteKey].errored = true;
         bench.suites[_suiteKey].errors = utils
           .toArray(bench.suites[_suiteKey].errors)
@@ -81,12 +113,15 @@ function barbellRunner(benchPath, stack, barbellConfig) {
           );
         }
       },
-      onComplete: function() {
+      onComplete: function () {
         bench.suites[_suiteKey].completed = true;
         bench.suites[_suiteKey].endTime = new Date();
         bench.suites[_suiteKey].results = {
+          // @ts-ignore
           stats: this.stats,
-          times: this.times
+          // @ts-ignore
+          times: this.times,
+          speed: 0,
         };
 
         bench.output.next(
@@ -99,7 +134,7 @@ function barbellRunner(benchPath, stack, barbellConfig) {
         );
 
         incrementBenchProgress();
-      }
+      },
     });
 
     bench.suites[_suiteKey] = {
@@ -114,16 +149,21 @@ function barbellRunner(benchPath, stack, barbellConfig) {
       progress: 0,
       completed: false,
       errored: false,
-      errors: null,
+      errors: [],
       tests: {},
-      results: {},
-      fn: suiteFn
+      results: {
+        stats: {},
+        times: {},
+        speed: 0,
+      },
+      fn: suiteFn,
     };
 
     currentSuite = bench.suites[_suiteKey];
 
     try {
-      (function(suite, test) {
+      (function (suite, test) {
+        // @ts-ignore
         const self = this;
         suiteFn.call(self);
       })(addSuite, addTest);
@@ -135,10 +175,9 @@ function barbellRunner(benchPath, stack, barbellConfig) {
         bench.output.error(error);
       } else {
         bench.output.complete(
+          // @ts-ignore
           chalk.red(
-            `Error occurred when running Suite #${currentSuite.index}: ${
-              currentSuite.name
-            }`
+            `Error occurred when running Suite #${currentSuite.index}: ${currentSuite.name}`
           )
         );
       }
@@ -154,10 +193,14 @@ function barbellRunner(benchPath, stack, barbellConfig) {
       bench.output.next(`Added suite ${suiteName}`);
     }
 
-    currentSuite = null;
+    currentSuite = undefined;
   }
 
-  function addTest(testName, testFn, testOptions) {
+  function addTest(
+    testName: string,
+    testFn: Function,
+    testOptions?: TestOptions
+  ) {
     // No suite added yet
     if (!currentSuite) {
       addSuite(fileName, function addStandaloneTest() {
@@ -174,28 +217,32 @@ function barbellRunner(benchPath, stack, barbellConfig) {
       key: _testKey,
       index: numTest,
       name: testName,
-      instance: null,
+      // @ts-ignore
+      instance: undefined,
       suite: parentSuite,
       startTime: 0,
       endTime: 0,
       skipped: parentSuite.skipped || !!(testOptions && testOptions.skip),
       completed: false,
       errored: false,
-      error: null,
-      results: {}
+      error: undefined,
+      results: {
+        stats: {},
+        times: {},
+        speed: 0,
+      },
     };
 
     if (!parentSuite.tests[_testKey].skipped) {
       parentSuite.instance.add(testName, testFn, {
-        onStart: function() {
+        onStart: function () {
           parentSuite.tests[_testKey].startTime = new Date();
           bench.output.next(
-            `Repping Suite #${parentSuite.index}: ${
-              parentSuite.name
-            } ⇒ Test #${numTest}: ${testName}...`
+            `Repping Suite #${parentSuite.index}: ${parentSuite.name} ⇒ Test #${numTest}: ${testName}...`
           );
         },
-        onError: function(event) {
+        // @ts-ignore
+        onError: function (event) {
           parentSuite.tests[_testKey].errored = true;
           parentSuite.tests[_testKey].error = event.target.error;
           parentSuite.tests[_testKey].endTime = new Date();
@@ -207,20 +254,21 @@ function barbellRunner(benchPath, stack, barbellConfig) {
           } else {
             bench.output.next(
               chalk.red(
-                `Error in Suite #${parentSuite.index}: ${
-                  parentSuite.name
-                } ⇒ Test #${numTest}: ${testName}!`
+                `Error in Suite #${parentSuite.index}: ${parentSuite.name} ⇒ Test #${numTest}: ${testName}!`
               )
             );
           }
         },
-        onComplete: function() {
+        onComplete: function () {
           parentSuite.progress = ++parentSuite.progress;
           parentSuite.tests[_testKey].completed = true;
           parentSuite.tests[_testKey].endTime = new Date();
           parentSuite.tests[_testKey].results = {
+            // @ts-ignore
             stats: this.stats,
-            time: this.time
+            // @ts-ignore
+            times: this.times,
+            speed: 0,
           };
           bench.output.next(
             `Completed Suite #${parentSuite.index}: ${
@@ -232,28 +280,25 @@ function barbellRunner(benchPath, stack, barbellConfig) {
               )})`
             )}`
           );
-        }
+        },
       });
       parentSuite.tests[_testKey].instance =
+        // @ts-ignore
         parentSuite.instance[parentSuite.instance.length - 1];
       bench.output.next(
-        `Added Test #${numTest}: ${testName} to Suite #${parentSuite.index}: ${
-          parentSuite.name
-        }`
+        `Added Test #${numTest}: ${testName} to Suite #${parentSuite.index}: ${parentSuite.name}`
       );
     } else {
       bench.output.next(
-        `Skipped Test #${numTest}: ${testName} in Suite #${
-          parentSuite.index
-        }: ${parentSuite.name}`
+        `Skipped Test #${numTest}: ${testName} in Suite #${parentSuite.index}: ${parentSuite.name}`
       );
     }
   }
 
-  addSuite.skip = (suiteName, suiteFn) =>
+  addSuite.skip = (suiteName: string, suiteFn: () => void) =>
     addSuite(suiteName, suiteFn, { skip: true });
 
-  addTest.skip = (testName, testFn) =>
+  addTest.skip = (testName: string, testFn: () => void) =>
     addTest(testName, testFn, { skip: true });
 
   const vm = new NodeVM({
@@ -266,14 +311,14 @@ function barbellRunner(benchPath, stack, barbellConfig) {
       clearInterval: NOOP,
       clearImmediate: NOOP,
       suite: addSuite,
-      test: addTest
+      test: addTest,
     },
     require: {
-      external: true
-    }
+      external: true,
+    },
   });
 
-  function sandboxCode(srcPath) {
+  function sandboxCode(srcPath: string) {
     const src = fs.readFileSync(benchPath, { encoding: "utf8" });
     vm.run(src, srcPath);
   }
@@ -284,10 +329,10 @@ function barbellRunner(benchPath, stack, barbellConfig) {
     sandboxCode(benchPath);
     const benchSuites = Object.values(bench.suites);
     if (benchSuites.length) {
-      benchSuites.map(suite => {
+      benchSuites.map((suite) => {
         if (!suite.skipped && suite.instance) {
           suite.instance.run({
-            async: true
+            async: true,
           });
         }
       });
@@ -320,6 +365,6 @@ function barbellRunner(benchPath, stack, barbellConfig) {
   }
 
   return bench.output;
-}
+};
 
-module.exports = barbellRunner;
+export default runner;

@@ -1,4 +1,4 @@
-const utils = require("../lib/utils");
+import * as utils from "../lib/utils";
 
 describe("round", () => {
   it("should round to the specified decimal place", () => {
@@ -15,43 +15,76 @@ describe("round", () => {
 
 describe("toArray", () => {
   it("should turn non-nil input into an array", () => {
-    let testToArrayBoolean = utils.toArray(false);
+    const testToArrayBoolean = utils.toArray(false);
     expect(testToArrayBoolean).toBeInstanceOf(Array);
     expect(testToArrayBoolean).toHaveLength(1);
     expect(testToArrayBoolean[0]).toBe(false);
 
-    let testToArrayNumber = utils.toArray(123);
+    const testToArrayNumber = utils.toArray(123);
     expect(testToArrayNumber).toBeInstanceOf(Array);
     expect(testToArrayNumber).toHaveLength(1);
     expect(testToArrayNumber[0]).toBe(123);
 
-    let testToArrayString = utils.toArray("test");
+    const testToArrayString = utils.toArray("test");
     expect(testToArrayString).toBeInstanceOf(Array);
     expect(testToArrayString).toHaveLength(1);
     expect(testToArrayString[0]).toBe("test");
 
-    let testObject = {};
-    let testToArrayObject = utils.toArray(testObject);
+    const testObject = {};
+    const testToArrayObject = utils.toArray(testObject);
     expect(testToArrayObject).toBeInstanceOf(Array);
     expect(testToArrayObject).toHaveLength(1);
     expect(testToArrayObject[0]).toBe(testObject);
   });
 
   it("should turn nil input into an empty array", () => {
-    let testToArrayUndefined = utils.toArray(undefined);
+    const testToArrayUndefined = utils.toArray(undefined);
     expect(testToArrayUndefined).toBeInstanceOf(Array);
     expect(testToArrayUndefined).toHaveLength(0);
 
-    let testToArrayNull = utils.toArray(null);
+    const testToArrayNull = utils.toArray(null);
     expect(testToArrayNull).toBeInstanceOf(Array);
     expect(testToArrayNull).toHaveLength(0);
   });
 
   it("should not turn array input into an array within an array", () => {
-    let testToArray = utils.toArray(["test"]);
+    const testToArray = utils.toArray(["test"]);
     expect(testToArray).toBeInstanceOf(Array);
     expect(testToArray).toHaveLength(1);
     expect(testToArray[0]).toBe("test");
+  });
+});
+
+describe("useFirstValid", () => {
+  it("should use the first valid value as per the validation function", () => {
+    expect(utils.useFirstValid((x) => x === 3, 1, 2, 3)).toEqual(3);
+  });
+
+  it("should use the last item, even if it doesn't match validation", () => {
+    expect(utils.useFirstValid((x) => x === 3, 1, 2, 4)).toEqual(4);
+  });
+});
+
+describe("useFirstDefined", () => {
+  it("should use the first defined value", () => {
+    expect(utils.useFirstDefined(undefined, undefined, 3)).toEqual(3);
+  });
+
+  it("should use the last item, even if it is empty", () => {
+    expect(utils.useFirstDefined(undefined, undefined)).toBeUndefined();
+  });
+});
+
+describe("useFirstNonEmptyArray", () => {
+  it("should use the first array which is not empty", () => {
+    expect(utils.useFirstNonEmptyArray([], [], [1, 2, 3])).toEqual(
+      expect.arrayContaining([1, 2, 3])
+    );
+  });
+
+  it("should use the last array, even if it is empty", () => {
+    const lastArray: any[] = [];
+    expect(utils.useFirstNonEmptyArray([], [], lastArray)).toEqual(lastArray);
   });
 });
 

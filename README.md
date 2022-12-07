@@ -1,4 +1,4 @@
-# 🏋️‍ Barbell
+# 🏋️‍ Barbell 🏋️‍♀️
 
 Easily benchmark your code's performance via CLI using similar (but different) interface to Jest.
 
@@ -52,7 +52,7 @@ suite("some code I want to test", () => {
 });
 ```
 
-Then run `barbell` in your terminal to see your results:
+Then run `barbell` (or `npx barbell`) in your terminal to see your results:
 
 ![Barbell in action](//unpkg.com/barbell@0.1.3/screenshot.gif)
 
@@ -62,18 +62,18 @@ There are some configuration options available on the CLI:
 
 ```
 > barbell -h
-Usage: barbell [options] [testMatch...]
+Usage: barbell [testMatch...] [options]
 
 Options:
   -V, --version                       output the version number
   -c, --config <path>                 Set path to config file
-  -t, --test-match [globPatterns...]  Set the test match glob(s) to detect
+  -t, --test-match <globPatterns...>  Set the test match glob(s) to detect
                                       benchmark tests or test file paths
                                       (default: [
-                                        "**/?(__(tests|benches)__)/**/*.bench.?(t|j)s?(x)",
-                                        "**/*.bench.?(t|j)s?(x)"
+                                        "**/__benches__/**/*(.bench)?.[tj]s",
+                                        "**/*.bench.[tj]s"
                                       ])
-  -e, --exclude [globPatterns...]     Exclude specific files and folders
+  -e, --exclude <globPatterns...>     Exclude specific files and folders
                                       (default: ["**/node_modules/**/*"])
   -C, --concurrent                    The number of benches you want to run
                                       at the same time
@@ -82,23 +82,30 @@ Options:
                                       within test suites
                                       (default: false)
   -v, --verbose                       Verbose mode (outputs config settings)
+                                      (default: false)
+  -r, --runner <nameOrPath>           Name or path to test runner
+                                      (default: barbell-runner)
+  -R, --reporter <nameOrPath>         Name or path to test reporter
+                                      (default: barbell-reporter)
   -h, --help                          output usage information
 ```
 
 ### Examples
 
+> Note: always wrap globs with quote marks!
+
 ```bash
 # Find and run test suite files with default config
-> barbell **/__benches__/**/*.bench.js
+> barbell "**/__benches__/**/*.bench.js"
 
 # Specify multiple test match glob patterns
-> barbell -t **/__benches__/**.*.bench.js -t **/__tests__/**/*.bench.js
+> barbell -t "**/__benches__/**.*.bench.js" -t "**/__tests__/**/*.bench.js"
 
 # Run a single test file with default config
-> barbell ./__benches__/example.bench.js
+> barbell "./__benches__/example.bench.js"
 
 # Specify a config file
-> barbell -c ./barbell.config.js
+> barbell -c "./barbell.config.js"
 ```
 
 ## Configuration
@@ -113,14 +120,11 @@ module.exports = {
   rootDir: process.cwd(),
 
   // The glob patterns to find bench files or specific bench files to run
-  // see npm module `glob` for more info
-  testMatch: [
-    "**/?(__(tests|benches)__)/**/*.bench.?(t|j)s?(x)",
-    "**/*.bench.?(t|j)s?(x)"
-  ],
+  // See npm module `glob` for more info
+  testMatch: ["**/__benches__/**/*(.bench)?.[tj]s", "**/*.bench.[tj]s"],
 
   // Glob patterns or paths of files/folders to exclude from running
-  // see npm module `glob`'s option `exclude` for more info
+  // See npm module `glob`'s option `exclude` for more info
   exclude: ["**/node_modules/**/*"],
 
   // The maximum number of benches to run at the same time
@@ -133,12 +137,16 @@ module.exports = {
   verbose: false,
 
   // Advanced: the package name, script path or custom function to run bench files with
-  // See ./lib/runner.js for more info
-  runner: "barbell/lib/runner",
+  // See ./lib/runner.ts for more info
+  runner: "barbell-runner",
 
   // Advanced: the package name, script path or custom function to output a report
-  // See ./lib/reporter.js for more info
-  reporter: "barbell/lib/reporter"
+  // See ./lib/reporter.ts for more info
+  reporter: "barbell-reporter",
+
+  // Advanced: extra configuration for the reporter.
+  // See ./lib/reporter.ts for more info
+  reporterConfig: {},
 };
 ```
 
@@ -159,15 +167,14 @@ To run tests (using Jest):
 To run benchmark tests:
 
 ```bash
-  node index.js
+  npm run bench
 ```
 
 ## Contribute
 
 Have suggestions, questions or feedback? Found a bug? [Post an issue](https://github.com/lvl99/barbell/issues)
-
-Added a feature? Fixed a bug? [Post a PR](https://github.com/lvl99/barbell/compare)
+Added a feature? Fixed a bug? Wrote some much needed tests? [Post a PR](https://github.com/lvl99/barbell/compare)
 
 ## License
 
-[MIT](LICENSE.md)
+[Apache-2.0](LICENSE.md)
