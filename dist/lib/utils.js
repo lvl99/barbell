@@ -85,7 +85,7 @@ function useFirstDefined() {
     for (var _i = 0; _i < arguments.length; _i++) {
         input[_i] = arguments[_i];
     }
-    return useFirstValid.apply(void 0, tslib_1.__spreadArray([function (x) { return x !== undefined; }], input, false));
+    return useFirstValid.apply(void 0, tslib_1.__spreadArray([function (x) { return x !== undefined; }], input.filter(function (x) { return x !== undefined; }), false));
 }
 exports.useFirstDefined = useFirstDefined;
 function useFirstNonEmptyArray() {
@@ -93,7 +93,7 @@ function useFirstNonEmptyArray() {
     for (var _i = 0; _i < arguments.length; _i++) {
         input[_i] = arguments[_i];
     }
-    return useFirstValid.apply(void 0, tslib_1.__spreadArray([function (x) { return x.length; }], input, false));
+    return useFirstValid.apply(void 0, tslib_1.__spreadArray([function (x) { return x.length; }], input.filter(function (x) { return x !== undefined; }), false));
 }
 exports.useFirstNonEmptyArray = useFirstNonEmptyArray;
 function formatNumber(input, delimiter, decimal) {

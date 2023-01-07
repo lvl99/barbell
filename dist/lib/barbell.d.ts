@@ -45,7 +45,7 @@ export interface Suite {
     errors: Error[];
     tests: Tests;
     results: Results;
-    fn: Function;
+    fn: () => void;
 }
 export interface Suites {
     [key: string]: Suite;

@@ -77,7 +77,7 @@ export const DEFAULT_FORMAT_TIME_DURATION_OPTIONS: FormatTimeDurationOptions = {
   },
 };
 
-export function round(input: number, decimalPlaces: number = 2): number {
+export function round(input: number, decimalPlaces = 2): number {
   return +(+input.toFixed(decimalPlaces));
 }
 
@@ -101,17 +101,23 @@ export function useFirstValid(
 }
 
 export function useFirstDefined(...input: any[]): any {
-  return useFirstValid((x) => x !== undefined, ...input);
+  return useFirstValid(
+    (x) => x !== undefined,
+    ...input.filter((x) => x !== undefined)
+  );
 }
 
 export function useFirstNonEmptyArray(...input: any[]): any[] {
-  return useFirstValid((x) => x.length, ...input);
+  return useFirstValid(
+    (x) => x.length,
+    ...input.filter((x) => x !== undefined)
+  );
 }
 
 export function formatNumber(
   input: any,
-  delimiter: string = ",",
-  decimal: string = "."
+  delimiter = ",",
+  decimal = "."
 ): string {
   const useInput = `${input}`.split(".");
   return (
@@ -142,7 +148,7 @@ export function formatTimeDuration(
   let output = "";
   let countDurations = 0;
   if (_input > 0) {
-    for (let durationName in _options.durations) {
+    for (const durationName in _options.durations) {
       if (_options.durations[durationName]) {
         const duration = _options.durations[durationName];
         countDurations++;

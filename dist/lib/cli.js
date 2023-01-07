@@ -20,14 +20,14 @@ function collect(val, memo) {
 exports.cli = commander_1.program
     .version(package_json_1.default.version)
     .arguments("[testMatch...]")
-    .option("-c, --config <path>", "Set path to config file")
-    .option("-t, --test-match <globPatterns...>", "Set the test match glob pattern(s) to detect benchmark tests or test file paths", collect, barbell_1.DEFAULT_CONFIG.testMatch.slice(0))
-    .option("-e, --exclude <globPatterns...>", "Exclude specific files and folders", collect, barbell_1.DEFAULT_CONFIG.exclude.slice(0))
-    .option("-C, --concurrent", "The number of benches you want to run at the same time", setConcurrent, barbell_1.DEFAULT_CONFIG.concurrent)
-    .option("-x, --stop-on-errors", "Stop Barbell if any errors are found within test suites", barbell_1.DEFAULT_CONFIG.stopOnErrors)
-    .option("-v, --verbose", "Verbose mode (outputs config settings)", barbell_1.DEFAULT_CONFIG.verbose)
-    .option("-r, --runner <nameOrPath>", "Name or path to test runner", barbell_1.DEFAULT_CONFIG.runner)
-    .option("-R, --reporter <nameOrPath>", "Name or path to test reporter", barbell_1.DEFAULT_CONFIG.reporter)
+    .option("-c, --config-path <path>", "Set path to config file")
+    .option("-t, --test-match <globPatterns...>", "Set the test match glob pattern(s) to detect benchmark tests or test file paths", collect, [])
+    .option("-e, --exclude <globPatterns...>", "Exclude specific files and folders", collect, [])
+    .option("-C, --concurrent", "The number of benches you want to run at the same time", setConcurrent)
+    .option("-x, --stop-on-errors", "Stop Barbell if any errors are found within test suites")
+    .option("-v, --verbose", "Verbose mode (outputs config settings)")
+    .option("-r, --runner <nameOrPath>", "Name or path to test runner")
+    .option("-R, --reporter <nameOrPath>", "Name or path to test reporter")
     .action(barbell_1.default)
     .parse(process.argv);
 exports.default = exports.cli;

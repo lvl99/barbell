@@ -10,10 +10,7 @@ import {
   Stack,
   Suite,
   SuiteOptions,
-  Suites,
-  Test,
   TestOptions,
-  Tests,
   Runner,
   Config,
   Output,
@@ -162,11 +159,10 @@ export const runner: Runner = function (
     currentSuite = bench.suites[_suiteKey];
 
     try {
-      (function (suite, test) {
+      (function (describe, suite, bench, test, it, rep) {
         // @ts-ignore
-        const self = this;
-        suiteFn.call(self);
-      })(addSuite, addTest);
+        suiteFn.call(this);
+      })(addSuite, addSuite, addSuite, addTest, addTest, addTest);
     } catch (error) {
       currentSuite.errored = true;
       currentSuite.errors = utils.toArray(currentSuite.errors).concat([error]);
@@ -198,7 +194,7 @@ export const runner: Runner = function (
 
   function addTest(
     testName: string,
-    testFn: Function,
+    testFn: () => void,
     testOptions?: TestOptions
   ) {
     // No suite added yet
@@ -310,8 +306,12 @@ export const runner: Runner = function (
       clearTimeout: NOOP,
       clearInterval: NOOP,
       clearImmediate: NOOP,
+      describe: addSuite,
       suite: addSuite,
+      bench: addSuite,
       test: addTest,
+      it: addTest,
+      rep: addTest,
     },
     require: {
       external: true,
@@ -319,7 +319,7 @@ export const runner: Runner = function (
   });
 
   function sandboxCode(srcPath: string) {
-    const src = fs.readFileSync(benchPath, { encoding: "utf8" });
+    const src = fs.readFileSync(srcPath, { encoding: "utf8" });
     vm.run(src, srcPath);
   }
 

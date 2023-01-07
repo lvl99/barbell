@@ -29,8 +29,12 @@
     {
       "files": ["**/*.bench.js"],
       "globals": {
+        "describe": true,
         "suite": true,
-        "test": true
+        "bench": true,
+        "test": true,
+        "it": true,
+        "rep": true
       },
       "extends": ["eslint:recommended", "prettier"]
     }

@@ -324,11 +324,11 @@ export const reporterHTML: Reporter = function (
                   fastestTestSpeed >= 0 &&
                   slowestTestSpeed >= 0
                 ) {
-                  let testSpeedDiff = fastestTestSpeed - test.results.speed;
-                  let testBarSpeed = Math.ceil(
+                  const testSpeedDiff = fastestTestSpeed - test.results.speed;
+                  const testBarSpeed = Math.ceil(
                     utils.round((test.results.speed / fastestTestSpeed) * 100)
                   );
-                  let testBarPerformance = Math.ceil(
+                  const testBarPerformance = Math.ceil(
                     utils.round((testSpeedDiff / totalSpeedDiff) * 2900)
                   );
 
@@ -404,7 +404,7 @@ export const reporterHTML: Reporter = function (
     content.join("\n")
   );
 
-  let reporterConfig: Required<ReporterHTMLConfig> = {
+  const reporterConfig: Required<ReporterHTMLConfig> = {
     outputFormat: "file",
     outputDir: path.join(barbellConfig.rootDir, "./coverage/barbell"),
     outputFileName: undefined,

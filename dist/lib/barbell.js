@@ -52,7 +52,9 @@ function loadConfig(input, rootDir) {
                     if (!/\.ya?ml$/.test(configPath)) return [3 /*break*/, 1];
                     config = js_yaml_1.default.load(node_fs_1.default.readFileSync(configPath, "utf8"));
                     return [3 /*break*/, 3];
-                case 1: return [4 /*yield*/, (_b = configPath, Promise.resolve().then(function () { return tslib_1.__importStar(require(_b)); }))];
+                case 1: return [4 /*yield*/, (_b = configPath, Promise.resolve().then(function () { return tslib_1.__importStar(require(_b)); })).then(function (c) {
+                        return c.default ? c.default : c;
+                    })];
                 case 2:
                     config = _a.sent();
                     _a.label = 3;
@@ -129,29 +131,22 @@ function getModule(input, rootDir, defaultValue) {
 }
 function barbell(testMatch, options) {
     return tslib_1.__awaiter(this, void 0, void 0, function () {
-        var stack, loadedConfig, _a, defaultRootDir, config, runner, _b, reporter, _c, _config, benches, startTime, benched, tasks;
-        return tslib_1.__generator(this, function (_d) {
-            switch (_d.label) {
+        var stack, loadedConfig, defaultRootDir, config, runner, _a, reporter, _b, _config, benches, startTime, benched, tasks;
+        return tslib_1.__generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     stack = {};
-                    if (!options.configPath) return [3 /*break*/, 2];
                     return [4 /*yield*/, getConfig(options.configPath)];
                 case 1:
-                    _a = _d.sent();
-                    return [3 /*break*/, 3];
-                case 2:
-                    _a = {};
-                    _d.label = 3;
-                case 3:
-                    loadedConfig = _a;
+                    loadedConfig = _c.sent();
                     return [4 /*yield*/, (0, find_up_1.default)("package.json").then(function (pkgPath) {
                             return pkgPath ? node_path_1.default.dirname(pkgPath) : node_path_1.default.join(__dirname, "..", "..");
                         })];
-                case 4:
-                    defaultRootDir = _d.sent();
+                case 2:
+                    defaultRootDir = _c.sent();
                     config = {
                         rootDir: utils.useFirstDefined(options.rootDir, loadedConfig.rootDir, defaultRootDir),
-                        configPath: options.configPath || "",
+                        configPath: utils.useFirstDefined(options.configPath, loadedConfig.configPath),
                         testMatch: tslib_1.__spreadArray([], utils.useFirstNonEmptyArray(testMatch, options.testMatch, loadedConfig.testMatch, exports.DEFAULT_TEST_MATCH), true),
                         exclude: tslib_1.__spreadArray([], utils.useFirstNonEmptyArray(options.exclude, exports.DEFAULT_CONFIG.exclude), true),
                         concurrent: utils.useFirstValid(function (x) { return typeof x === "number" && x > 0; }, options.concurrent, loadedConfig.concurrent, exports.DEFAULT_CONFIG.concurrent),
@@ -161,39 +156,44 @@ function barbell(testMatch, options) {
                         reporter: utils.useFirstDefined(options.reporter, loadedConfig.reporter, exports.DEFAULT_CONFIG.reporter),
                         reporterConfig: utils.useFirstDefined(options.reporterConfig, loadedConfig.reporterConfig, {}),
                     };
-                    _b = typeof config.runner;
-                    switch (_b) {
-                        case "string": return [3 /*break*/, 5];
-                        case "function": return [3 /*break*/, 7];
+                    _a = typeof config.runner;
+                    switch (_a) {
+                        case "string": return [3 /*break*/, 3];
+                        case "function": return [3 /*break*/, 5];
                     }
-                    return [3 /*break*/, 8];
-                case 5: return [4 /*yield*/, getModule(config.runner, config.rootDir, exports.DEFAULT_CONFIG.runner)];
-                case 6:
-                    runner = _d.sent();
-                    return [3 /*break*/, 9];
-                case 7:
+                    return [3 /*break*/, 6];
+                case 3: return [4 /*yield*/, getModule(config.runner, config.rootDir, exports.DEFAULT_CONFIG.runner)];
+                case 4:
+                    runner = _c.sent();
+                    return [3 /*break*/, 7];
+                case 5:
                     runner = config.runner;
-                    return [3 /*break*/, 9];
-                case 8: throw new Error("No runner specified!");
-                case 9:
-                    _c = typeof config.reporter;
-                    switch (_c) {
-                        case "string": return [3 /*break*/, 10];
-                        case "function": return [3 /*break*/, 12];
+                    return [3 /*break*/, 7];
+                case 6: throw new Error("No runner specified!");
+                case 7:
+                    _b = typeof config.reporter;
+                    switch (_b) {
+                        case "string": return [3 /*break*/, 8];
+                        case "function": return [3 /*break*/, 10];
                     }
-                    return [3 /*break*/, 13];
-                case 10: return [4 /*yield*/, getModule(config.reporter, config.rootDir, exports.DEFAULT_CONFIG.reporter)];
-                case 11:
-                    reporter = _d.sent();
-                    return [3 /*break*/, 14];
-                case 12:
+                    return [3 /*break*/, 11];
+                case 8: return [4 /*yield*/, getModule(config.reporter, config.rootDir, exports.DEFAULT_CONFIG.reporter)];
+                case 9:
+                    reporter = _c.sent();
+                    return [3 /*break*/, 12];
+                case 10:
                     reporter = config.reporter;
-                    return [3 /*break*/, 14];
-                case 13: throw new Error("No reporter specified!");
-                case 14:
+                    return [3 /*break*/, 12];
+                case 11: throw new Error("No reporter specified!");
+                case 12:
                     _config = tslib_1.__assign(tslib_1.__assign({}, config), { runner: runner, reporter: reporter });
                     if (_config.verbose) {
                         console.log("\n📣 Barbell running in verbose mode\n");
+                        console.log({
+                            options: options,
+                            loadedConfig: loadedConfig,
+                            config: config,
+                        });
                         console.log(_config);
                     }
                     if (!_config.testMatch || !_config.testMatch.length) {

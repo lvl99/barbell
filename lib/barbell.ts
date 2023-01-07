@@ -59,7 +59,7 @@ export interface Suite {
   errors: Error[];
   tests: Tests;
   results: Results;
-  fn: Function;
+  fn: () => void;
 }
 
 export interface Suites {
@@ -173,7 +173,9 @@ async function loadConfig(
     }
     // Load JS/JSON version
     else {
-      config = await import(configPath);
+      config = await import(configPath).then((c) =>
+        c.default ? c.default : c
+      );
     }
     config.configPath = configPath;
     return config || ({} as ConfigOptions);
@@ -246,9 +248,7 @@ async function getModule<T = any>(
 
 async function barbell(testMatch: string[], options: ConfigOptions) {
   const stack = {};
-  let loadedConfig = options.configPath
-    ? await getConfig(options.configPath)
-    : {};
+  const loadedConfig = await getConfig(options.configPath);
 
   const defaultRootDir = await findUp("package.json").then((pkgPath) =>
     pkgPath ? path.dirname(pkgPath) : path.join(__dirname, "..", "..")
@@ -261,7 +261,10 @@ async function barbell(testMatch: string[], options: ConfigOptions) {
       loadedConfig.rootDir,
       defaultRootDir
     ),
-    configPath: options.configPath || "",
+    configPath: utils.useFirstDefined(
+      options.configPath,
+      loadedConfig.configPath
+    ),
     testMatch: [
       ...utils.useFirstNonEmptyArray(
         testMatch,

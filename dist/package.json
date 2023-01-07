@@ -1,6 +1,6 @@
 {
     "name": "barbell",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Easily benchmark your JS code's performance via CLI using similar (but different) interface to Jest.",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
@@ -14,9 +14,9 @@
         "build": "rm -rf ./dist && tsc",
         "lint": "eslint 'index.ts' './declarations/**/*.ts' './__tests__/**/*.ts' './lib/**/*.ts' -c .eslintrc.json --ignore-path .lintignore",
         "lint:fix": "eslint 'index.ts' './declarations/**/*.ts' './__tests__/**/*.ts' './lib/**/*.ts' -c .eslintrc.json --ignore-path .lintignore --fix",
-        "test": "jest",
+        "test": "jest --coverage=true",
         "test:watch": "jest --watch",
-        "bench": "node ./dist/lib/cli.js -v",
+        "bench": "node ./dist/lib/cli.js",
         "pre-publish": "npm run lint && npm run build && npm run test"
     },
     "keywords": [

@@ -119,11 +119,10 @@ var runner = function (benchPath, stack, barbellConfig) {
         };
         currentSuite = bench.suites[_suiteKey];
         try {
-            (function (suite, test) {
+            (function (describe, suite, bench, test, it, rep) {
                 // @ts-ignore
-                var self = this;
-                suiteFn.call(self);
-            })(addSuite, addTest);
+                suiteFn.call(this);
+            })(addSuite, addSuite, addSuite, addTest, addTest, addTest);
         }
         catch (error) {
             currentSuite.errored = true;
@@ -236,15 +235,19 @@ var runner = function (benchPath, stack, barbellConfig) {
             clearTimeout: NOOP,
             clearInterval: NOOP,
             clearImmediate: NOOP,
+            describe: addSuite,
             suite: addSuite,
+            bench: addSuite,
             test: addTest,
+            it: addTest,
+            rep: addTest,
         },
         require: {
             external: true,
         },
     });
     function sandboxCode(srcPath) {
-        var src = node_fs_1.default.readFileSync(benchPath, { encoding: "utf8" });
+        var src = node_fs_1.default.readFileSync(srcPath, { encoding: "utf8" });
         vm.run(src, srcPath);
     }
     stack[benchPath] = bench;
