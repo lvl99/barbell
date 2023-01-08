@@ -4,6 +4,7 @@ import * as utils from "./utils";
 
 export const reporter: Reporter = function (
   stack: Stack,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   barbellConfig: Config
 ): string | void {
   console.log("\nBarbell results:");
@@ -21,7 +22,7 @@ export const reporter: Reporter = function (
     } else {
       Object.values(bench.suites).forEach((suite) => {
         const suiteTests = suite.instance.map(
-          (test: Function | string) => test
+          (test: () => void | string) => test
         );
         const barLength = 15;
         let slowestTestSpeed: number;
@@ -136,13 +137,13 @@ export const reporter: Reporter = function (
                   fastestTestSpeed >= 0 &&
                   slowestTestSpeed >= 0
                 ) {
-                  let testSpeedDiff = fastestTestSpeed - test.results.speed;
-                  let testBarLength = Math.ceil(
+                  const testSpeedDiff = fastestTestSpeed - test.results.speed;
+                  const testBarLength = Math.ceil(
                     utils.round(
                       (testSpeedDiff / totalSpeedDiff) * (barLength - 1)
                     ) + 1
                   );
-                  let remainderBarLength = barLength - testBarLength;
+                  const remainderBarLength = barLength - testBarLength;
 
                   testBar = `${"█".repeat(testBarLength)}${
                     remainderBarLength
@@ -158,7 +159,7 @@ export const reporter: Reporter = function (
                   // }`;
                 }
 
-                let testResults = `${utils.formatNumber(
+                const testResults = `${utils.formatNumber(
                   utils.round(hz, hz < 100 ? 2 : 0)
                 )} ops/sec ± ${rme.toFixed(2)} % (${size} run${
                   size === 1 ? "" : "s"
@@ -166,7 +167,7 @@ export const reporter: Reporter = function (
                 testOutput = `${testBar}${testResults}`;
               }
 
-              let testHeader = `\n    ${
+              const testHeader = `\n    ${
                 test.skipped || !test.instance
                   ? chalk.yellow("○")
                   : test.errored

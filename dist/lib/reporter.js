@@ -4,7 +4,9 @@ exports.reporter = void 0;
 var tslib_1 = require("tslib");
 var chalk_1 = tslib_1.__importDefault(require("chalk"));
 var utils = tslib_1.__importStar(require("./utils"));
-var reporter = function (stack, barbellConfig) {
+var reporter = function (stack, 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+barbellConfig) {
     console.log("\nBarbell results:");
     Object.values(stack).forEach(function (bench) {
         console.log(chalk_1.default.white("\n".concat(bench.relativePath).concat(bench.errored ? chalk_1.default.red(" (errored)") : "")));

@@ -10,11 +10,14 @@ var chalk_1 = tslib_1.__importDefault(require("chalk"));
 var rxjs_1 = require("rxjs");
 var vm2_1 = require("vm2");
 var utils = tslib_1.__importStar(require("./utils"));
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 function NOOP() { }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function sandboxSetTimeout(callback, ms) {
     // @ts-ignore
     callback.call(this);
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function sandboxSetInterval(callback, ms) {
     // @ts-ignore
     callback.call(this);
@@ -119,6 +122,7 @@ var runner = function (benchPath, stack, barbellConfig) {
         };
         currentSuite = bench.suites[_suiteKey];
         try {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             (function (describe, suite, bench, test, it, rep) {
                 // @ts-ignore
                 suiteFn.call(this);

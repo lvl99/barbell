@@ -189,11 +189,6 @@ function barbell(testMatch, options) {
                     _config = tslib_1.__assign(tslib_1.__assign({}, config), { runner: runner, reporter: reporter });
                     if (_config.verbose) {
                         console.log("\n📣 Barbell running in verbose mode\n");
-                        console.log({
-                            options: options,
-                            loadedConfig: loadedConfig,
-                            config: config,
-                        });
                         console.log(_config);
                     }
                     if (!_config.testMatch || !_config.testMatch.length) {

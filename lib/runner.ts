@@ -17,12 +17,15 @@ import {
 } from "./barbell";
 import * as utils from "./utils";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 function NOOP(): void {}
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function sandboxSetTimeout(callback: () => void, ms?: number): void {
   // @ts-ignore
   callback.call(this);
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function sandboxSetInterval(callback: () => void, ms?: number): void {
   // @ts-ignore
   callback.call(this);
@@ -159,6 +162,7 @@ export const runner: Runner = function (
     currentSuite = bench.suites[_suiteKey];
 
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       (function (describe, suite, bench, test, it, rep) {
         // @ts-ignore
         suiteFn.call(this);
