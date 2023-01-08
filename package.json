@@ -1,6 +1,6 @@
 {
   "name": "barbell",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Easily benchmark your JS code's performance via CLI using similar (but different) interface to Jest.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
